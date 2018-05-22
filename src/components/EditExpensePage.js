@@ -1,0 +1,58 @@
+import {connect} from 'react-redux';
+import React from 'react';
+import ExpenseForm from './ExpenseForm';
+import {editExpense, removeExpense} from '../actions/expenses';
+//edit EditExpensePage
+
+
+//Refractor EditExpensePage to be a class based component
+//setup mapDispatchToProps editExpense and removeExpense
+
+export class EditExpensePage extends React.Component
+{
+    onSubmit = (expense) => {
+        //Dispatch the action to edit the expense
+        this.props.editExpense(this.props.expense.id, expense);
+        // console.log('updated', expense);
+        //Redirect to the dashboard
+        this.props.history.push('/');
+    }
+    onRemove = () => {
+        this.props.removeExpense({ id: this.props.expense.id });
+        this.props.history.push('/');
+    }
+    render(){
+        return (
+            <div>
+                <ExpenseForm
+                    expense={this.props.expense}
+                    onSubmit={this.onSubmit}
+                />
+                <button onClick={this.onRemove}>
+                    Remove
+            </button>
+            </div>
+        );
+    }
+
+}
+
+
+// const EditExpensePage = (props) => {
+//     console.log(props);
+    
+// }
+
+//Remove expense via dispatch and then redirect to dashboard
+const mapStateToProps = (state, props) => (
+    {
+        expense: state.expenses.find((expense) => expense.id === props.match.params.id)
+    }
+)
+const mapDispatchToProps = (dispatch, props) => ({
+    editExpense: (id, expense) => dispatch(editExpense(id, expense)),
+    removeExpense: (data) => dispatch(removeExpense(data))
+});
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditExpensePage);
